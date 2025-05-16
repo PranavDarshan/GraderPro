@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'UploadQP',
     'UploadScript',
+    'Student',
 ]
 
 MIDDLEWARE = [
