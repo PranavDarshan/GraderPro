@@ -82,6 +82,18 @@ Before installing GraderPro, ensure you have the following:
 
 Watch the [youtube demo](https://youtu.be/TfD70bya5jM) for the results.
 
+### Teacher Frontend
+
+<img src="https://github.com/PranavDarshan/GraderPro/blob/main/Assests/Results/Upload_Questions.png" alt="Fig 1. Upload Questions"/>
+<img src="https://github.com/PranavDarshan/GraderPro/blob/main/Assests/Results/Upload_Answers.png"/>
+<img src="https://github.com/PranavDarshan/GraderPro/blob/main/Assests/Results/Teacher's_side_result.png"/>
+<img src="https://github.com/PranavDarshan/GraderPro/blob/main/Assests/Results/Teacher_result.png"/>
+
+### Student Frontend
+
+<img src="https://github.com/PranavDarshan/GraderPro/blob/main/Assests/Results/Student_dash.png"/>
+<img src="https://github.com/PranavDarshan/GraderPro/blob/main/Assests/Results/Student_feedback.png"/>
+
 ## Contributing
 
 We welcome contributions to GraderPro! To contribute:
