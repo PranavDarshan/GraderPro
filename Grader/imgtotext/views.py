@@ -35,24 +35,68 @@ def get_question_text_from_db(subject, exam_type, qno):
 
 
 def parse_and_add_questions(extracted_text, subject, exam_type):
-    question_blocks = re.split(r'## Question\d+:', extracted_text)
-    question_numbers = re.findall(r'## Question(\d+):', extracted_text)
+    """Parse extracted text and match with questions from database"""
     
+    logger.info(f"Parsing extracted text (length: {len(extracted_text)})")
+    logger.info(f"First 500 chars: {extracted_text[:500]}")
+    
+    # Get all questions from database
+    doc = questions_collection.find_one({"subject": subject, "exam_type": exam_type})
+    if not doc or 'questions' not in doc:
+        logger.error(f"No questions found in DB for {subject}/{exam_type}")
+        return []
+    
+    db_questions = {q['qno']: q['question'] for q in doc['questions']}
+    logger.info(f"Found {len(db_questions)} questions in DB: {list(db_questions.keys())}")
+    
+    # Try multiple patterns to find question markers
+    patterns = [
+        r'\[Q(\d+)\]',           # [Q1], [Q2]
+        r'^\s*(\d+)\)',          # 1), 2), 3)
+        r'Question\s*(\d+)',     # Question 1, Question 2
+        r'^(\d+)\.',             # 1., 2., 3.
+    ]
+    
+    found_answers = {}
+    
+    for pattern in patterns:
+        matches = list(re.finditer(pattern, extracted_text, re.MULTILINE))
+        if matches:
+            logger.info(f"✓ Found {len(matches)} matches with pattern: {pattern}")
+            
+            for i, match in enumerate(matches):
+                qno = int(match.group(1))
+                start = match.end()
+                end = matches[i + 1].start() if i + 1 < len(matches) else len(extracted_text)
+                
+                answer_text = extracted_text[start:end].strip()
+                answer_parts = [p.strip() for p in answer_text.split('\n\n') if p.strip()]
+                
+                if not answer_parts:
+                    answer_parts = [answer_text] if answer_text else []
+                
+                found_answers[qno] = answer_parts
+                logger.info(f"  Q{qno}: {len(answer_parts)} paragraphs")
+            
+            break
+    
+    # If no pattern matched, try to intelligently split the text
+    if not found_answers:
+        logger.warning("No question markers found, attempting intelligent split...")
+        # Send everything as one answer for Q1
+        found_answers[1] = [extracted_text]
+    
+    # Build result
     result = []
-    for i, qno in enumerate(question_numbers):
-        text = question_blocks[i+1].strip() if i+1 < len(question_blocks) else ""
-        answer_parts = [part.strip() for part in text.split('\n\n') if part.strip()]
-
-        question_text = get_question_text_from_db(subject, exam_type, qno)
-
+    for qno in sorted(db_questions.keys()):
         result.append({
-            "qno": int(qno),
-            "question": question_text,
-            "answer": answer_parts
+            "qno": qno,
+            "question": db_questions[qno],
+            "answer": found_answers.get(qno, ["No answer extracted"])
         })
-
+    
+    logger.info(f"Parsed {len(result)} questions")
     return result
-
 
 def extract_text_from_images(base64_images):
     client = Groq(api_key=settings.GROQ_API_KEY)
