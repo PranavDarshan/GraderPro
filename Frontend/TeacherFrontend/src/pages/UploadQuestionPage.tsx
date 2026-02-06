@@ -24,7 +24,7 @@ const UploadQuestionPage = () => {
   const [error, setError] = useState('');
   const [step, setStep] = useState(1);
 
-  const GROQ_API_KEY = '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';
+  const GROQ_API_KEY = '';
   const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
   const GROQ_MODEL = 'meta-llama/llama-4-scout-17b-16e-instruct';
 
