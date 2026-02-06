@@ -16,7 +16,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-GROQ_API_KEY="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"
+GROQ_API_KEY=""
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
