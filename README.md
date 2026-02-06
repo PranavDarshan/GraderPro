@@ -44,7 +44,7 @@ Before installing GraderPro, ensure you have the following:
    git clone https://github.com/PranavDarshan/GraderPro.git
    cd GraderPro
    ```
-
+   #### NOTE: Change the api key in ```Frontend/TeacherFrontend/src/pages/UploadQuestionPage.tsx``` and ```Grader/Grader/settings.py```
 2. Install dependencies:
    ```bash
    npm install
